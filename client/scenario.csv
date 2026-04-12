@@ -1,0 +1,4 @@
+method,url,remarks
+GET,http://localhost:12000/api/data1,normal request
+GET,http://localhost:12001/api/data2,normal request
+GET,http://localhost:12000/api/token,get token

@@ -1,0 +1,4 @@
+method, request, response
+GET, /api/data1, DATA1_OK
+GET, /api/data2, DATA2_OK
+GET, /api/token, TOKEN_OK
