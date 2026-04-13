@@ -4,7 +4,7 @@
 
 ## Tổng quan (Overview)
 
-Trong ví dụ này, chúng ta giả lập việc client truy cập trực tiếp vào server mà không thông qua Toxiproxy, nhằm minh họa cách sử dụng cơ bản của bộ công cụ client và server.
+Trong ví dụ này, chúng ta giả lập việc client truy cập trực tiếp vào server mà không thông qua WireMock, nhằm minh họa cách sử dụng cơ bản của bộ công cụ client và server.
 
 ```mermaid
 graph LR

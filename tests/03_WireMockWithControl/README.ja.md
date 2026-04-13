@@ -1,6 +1,6 @@
 [English](README.md) | [Tiếng Việt](README.vi.md) | [日本語](README.ja.md)
 
-# Toxiproxy経由でのサーバーへのクライアントアクセス
+# WireMock経由でのサーバーへのクライアントアクセス
 
 ## 概要
 

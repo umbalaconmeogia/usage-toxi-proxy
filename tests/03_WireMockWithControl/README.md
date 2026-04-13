@@ -1,6 +1,6 @@
 [English](README.md) | [Tiếng Việt](README.vi.md) | [日本語](README.ja.md)
 
-# Client access server via Toxiproxy
+# Client access server via WireMock
 
 ## Overview
 

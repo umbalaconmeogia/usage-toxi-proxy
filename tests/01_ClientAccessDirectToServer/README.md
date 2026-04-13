@@ -4,7 +4,7 @@
 
 ## Overview
 
-In this example, we make the client access directly to the server without using Toxiproxy, just to demonstrate the basic usage of the client and server.
+In this example, we make the client access directly to the server without using WireMock, just to demonstrate the basic usage of the client and server.
 
 ```mermaid
 graph LR
