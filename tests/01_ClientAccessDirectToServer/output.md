@@ -1,4 +1,4 @@
-# Server
+## Server
 
 ```
 PS > ..\..\server\server.ps1 .\scenario-server.csv http://localhost:12000 3
@@ -15,10 +15,10 @@ PS > ..\..\server\server.ps1 .\scenario-server.csv http://localhost:12000 3
 [INFO] Server stopped immediately.
 ```
 
-# Client
+## Client
 
 ```
-PS D:\data\projects.it\openSource\usage-toxi-proxy\tests\ClientAccessDirectToServer> ..\..\server\server.ps1 .\scenario-server.csv http://localhost:12000 3
+PS > ..\..\server\server.ps1 .\scenario-server.csv http://localhost:12000 3
 [INFO] Server started at http://localhost:12000/
 [INFO] Press Ctrl+C to stop.
 [20260413 144329] Receive request: GET /api/get-data

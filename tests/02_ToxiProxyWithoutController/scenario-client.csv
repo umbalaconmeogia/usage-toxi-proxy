@@ -1,0 +1,8 @@
+method,url,param,remarks
+GET,http://localhost:13000/api/get-data,,Normal GET request
+WAIT,,1,
+GET,http://localhost:13000/api/post-data,,Error
+WAIT,,2,
+POST,http://localhost:13000/api/post-data,abc,Normal POST request
+WAIT,,3,
+GET,http://localhost:13000/api/token,,Get token
