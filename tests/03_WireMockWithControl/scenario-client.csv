@@ -5,6 +5,6 @@ no,method,url,param,remarks
 4,GET,http://localhost:13000/api/token,,Error 500
 5,GET,http://localhost:13000/api/token,,Retry, OK
 6,GET,http://localhost:13000/api/get-data,,Normal GET request
-7,GET,http://localhost:13000/api/logic-error,abc,Error by program (HTTP OK)
-8,GET,http://localhost:13000/api/logic-error,abc,Retry, OK
+7,GET,http://localhost:13000/api/logic,abc,Error by program (HTTP OK)
+8,GET,http://localhost:13000/api/logic,abc,Retry, OK
 9,GET,http://localhost:13000/api/timeout,,Proxy not return to client

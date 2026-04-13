@@ -13,7 +13,7 @@ graph LR
   
     subgraph "WireMock Process"
         WM_Proxy
-        WM_Mappings["Mappings\n00_default_proxy"]
+        WM_Mappings["Mappings<br>00_default_proxy"]
     end
 ```
 

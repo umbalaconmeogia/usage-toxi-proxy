@@ -8,12 +8,12 @@
 
 ```mermaid
 graph LR
-    Client["クライアント"] -- "リクエスト (ポート 13000)" --> WM_Proxy["WireMock\n(プロキシポート)"]
+    Client["クライアント"] -- "リクエスト (ポート 13000)" --> WM_Proxy["WireMock"]
     WM_Proxy -- "転送 (ポート 12000)" --> Server["サーバー"]
   
     subgraph "WireMock プロセス"
         WM_Proxy
-        WM_Admin["管理用 API\n(ポート 9091)"]
+        WM_Mappings["マッピング<br>00_default_proxy"]
     end
 ```
 

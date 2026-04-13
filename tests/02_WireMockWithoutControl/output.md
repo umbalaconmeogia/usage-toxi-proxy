@@ -1,7 +1,7 @@
 ## Server
 
 ```
-PS D:\data\projects.it\openSource\usage-toxi-proxy\tests\02_WireMockWithoutControl>    ..\..\server\server.ps1 .\scenario-server.csv http://localhost:12000 3
+PS usage-wiremock\tests\02_WireMockWithoutControl>  ..\..\server\server.ps1 .\scenario-server.csv http://localhost:12000 3
 [INFO] Server started at http://localhost:12000/
 [INFO] Press Ctrl+C to stop.
 [20260414 003829] Receive request: GET /api/get-data
@@ -17,7 +17,7 @@ PS D:\data\projects.it\openSource\usage-toxi-proxy\tests\02_WireMockWithoutContr
 ## Client
 
 ```
-PS D:\data\projects.it\openSource\usage-toxi-proxy\tests\02_WireMockWithoutControl>    ..\..\client\client.ps1 .\scenario-client.csv
+PS usage-wiremock\tests\02_WireMockWithoutControl>  ..\..\client\client.ps1 .\scenario-client.csv
 [INFO] Scenario file: .\scenario-client.csv
 
 [20260414 003828] Send request: GET http://localhost:13000/api/get-data

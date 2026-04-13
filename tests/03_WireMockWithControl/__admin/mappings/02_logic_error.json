@@ -7,13 +7,13 @@
       "Matchers": [
         {
           "Name": "WildcardMatcher",
-          "Pattern": "/api/logic-error"
+          "Pattern": "/api/logic"
         }
       ]
     }
   },
   "Response": {
     "StatusCode": 200,
-    "Body": "PROGRAM_ERROR"
+    "Body": "LOGIC_ERROR by WireMock"
   }
 }

@@ -8,12 +8,12 @@ Trong bài kiểm tra này, client kết nối với server thông qua WireMock 
 
 ```mermaid
 graph LR
-    Client["Client"] -- "Request (Port 13000)" --> WM_Proxy["WireMock\n(Proxy Port)"]
+    Client["Client"] -- "Request (Port 13000)" --> WM_Proxy["WireMock"]
     WM_Proxy -- "Forward (Port 12000)" --> Server["Server"]
   
     subgraph "WireMock Process"
         WM_Proxy
-        WM_Admin["Admin API\n(Port 9091)"]
+        WM_Mappings["Mappings<br>00_default_proxy"]
     end
 ```
 
