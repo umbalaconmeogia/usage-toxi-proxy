@@ -1,9 +1,10 @@
-No, process, response, param
-1, *, , 
-2, *, , 
-3, *, , 
-4, 500, , 
-5, *, , 
-6, *, , 
-7, NONE, , 
-8, 200, PROGRAM_ERROR,
+no,process,response,param,remaks
+1,*, ,,Pass through to server
+2,*, ,,"Pass through, error without trying"
+3,*, ,,Pass through
+4,500, ,,Return error 500
+5,*, ,,Retry
+6,*, ,,Pass through
+7,200,PROGRAM_ERROR,,Error by program
+8,*, ,,Pass through
+9,NONE,,,

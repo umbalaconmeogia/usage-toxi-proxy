@@ -25,12 +25,12 @@ graph LR
    ..\..\server\server.ps1 .\scenario-server.csv http://localhost:12000 3
    ```
 * **Khởi động ToxiProxy**
-   Chạy Toxiproxy server với cấu hình đã định nghĩa trước:
+   Truy cập vào thư mục `tests\02_ToxiProxyWithoutController` và chạy:
    ```powershell
     ..\..\toxiproxy\toxiproxy-server-windows-amd64.exe -config ..\..\toxiproxy\server1-config.json
    ```
 * **Khởi động client**
-   Chạy kịch bản client (trỏ đến cổng Toxiproxy `13000`):
+   Truy cập vào thư mục `tests\02_ToxiProxyWithoutController` và chạy:
    ```powershell
    ..\..\client\client.ps1 .\scenario-client.csv
    ```

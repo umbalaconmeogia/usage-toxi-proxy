@@ -25,12 +25,12 @@ graph LR
    ..\..\server\server.ps1 .\scenario-server.csv http://localhost:12000 3
    ```
 * **Start ToxiProxy**
-   Run the Toxiproxy server with the predefined configuration:
+   Go to the `tests\02_ToxiProxyWithoutController` folder and run:
    ```powershell
     ..\..\toxiproxy\toxiproxy-server-windows-amd64.exe -config ..\..\toxiproxy\server1-config.json
    ```
 * **Start client**
-   Run the client scenario (pointing to the Toxiproxy port `13000`):
+   Go to the `tests\02_ToxiProxyWithoutController` folder and run:
    ```powershell
    ..\..\client\client.ps1 .\scenario-client.csv
    ```

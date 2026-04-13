@@ -25,12 +25,12 @@ graph LR
    ..\..\server\server.ps1 .\scenario-server.csv http://localhost:12000 3
    ```
 * **ToxiProxy の起動**
-   定義済みの設定を使用して Toxiproxy サーバーを実行します：
+   `tests\02_ToxiProxyWithoutController` フォルダに移動し、以下を実行します：
    ```powershell
     ..\..\toxiproxy\toxiproxy-server-windows-amd64.exe -config ..\..\toxiproxy\server1-config.json
    ```
 * **クライアントの起動**
-   クライアントシナリオを実行します（Toxiproxy ポート `13000` を指定）：
+   `tests\02_ToxiProxyWithoutController` フォルダに移動し、以下を実行します：
    ```powershell
    ..\..\client\client.ps1 .\scenario-client.csv
    ```
