@@ -1,53 +1,55 @@
+[English](README.md) | [Tiếng Việt](README.vi.md) | [日本語](README.ja.md)
+
 # Specification: Client
 
-## 1. Tổng quan (Overview)
+## 1. Overview
 
-`client.ps1` là một **chương trình client dùng cho mục đích test**, có nhiệm vụ **gửi các HTTP request theo một kịch bản định sẵn** đến một server (hoặc proxy như Toxiproxy), nhằm kiểm tra hành vi xử lý, retry, và fault tolerance của hệ thống đích.
+`client.ps1` is a **test client program** responsible for **sending HTTP requests according to a predefined scenario** to a server (or proxy like Toxiproxy), to test the handling behavior, retry mechanism, and fault tolerance of the target system.
 
-Chương trình được thiết kế để:
+The program is designed to:
 
-* Chạy trên **môi trường Windows tiêu chuẩn**
-* Không phụ thuộc vào framework hay runtime bổ sung
-* Hoạt động độc lập với hệ thống production
+* Run on **standard Windows environment**
+* No dependency on additional frameworks or runtimes
+* Work independently from the production system
 
 ---
 
-## 2. Cú pháp (Syntax)
+## 2. Syntax
 
 ```powershell
 program.ps1 [<scenario file>]
 ```
 
-| Tham số            | Mô tả                                                   |
-| :------------------ | :-------------------------------------------------------- |
-| `<scenario file>` | File CSV mô tả kịch bản gửi request. Ví dụ: `scenario.csv` |
+| Parameter          | Description                                               |
+| :----------------- | :-------------------------------------------------------- |
+| `<scenario file>` | CSV file describing the request scenario. Example: `scenario.csv` |
 
-### 2.2 Giá trị mặc định
+### 2.2 Default Values
 
-| Tham số            | Giá trị mặc định   |
-| :------------------ | :------------------ |
-| `<scenario file>` | `scenario.csv` |
+| Parameter          | Default Value      |
+| :----------------- | :----------------- |
+| `<scenario file>` | `scenario.csv`     |
 
 ---
 
-## 3. Định dạng file scenario
+## 3. Scenario File Format
 
 ### 3.1 File: `scenario.csv`
 
-File scenario là file CSV với các cột sau:
+The scenario file is a CSV file with the following columns:
 
 ```csv
 method, url, param, remarks
 ```
 
-| Cột       | Mô tả                                                                                                                                                              |
-| :-------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `method`  | HTTP Method (GET, POST, PUT, DELETE, ...) hoặc pseudo-method `WAIT`.                                                                                              |
-| `url`     | URL đầy đủ (ví dụ: `http://localhost:12000/api/data`). Không bắt buộc nếu method là `WAIT`.                                                                      |
-| `param`   | Tham số đi kèm: <br>- Nếu `method` là `WAIT`: Số giây cần chờ. <br>- Nếu `method` là `POST`: Nội dung body gửi đi. |
-| `remarks` | Ghi chú cho kịch bản (không ảnh hưởng logic).                                                                                                                     |
+| Column    | Description                                                                                                                                                              |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `method`  | HTTP Method (GET, POST, PUT, DELETE, ...) or pseudo-method `WAIT`.                                                                                                       |
+| `url`     | Full URL (e.g., `http://localhost:12000/api/data`). Optional if method is `WAIT`.                                                                                      |
+| `param`   | Accompanying parameters: <br>- If `method` is `WAIT`: Number of seconds to wait. <br>- If `method` is `POST`: Content of the request body to be sent. |
+| `remarks` | Notes for the scenario (does not affect logic).                                                                                                                          |
 
-### 3.2 Ví dụ
+### 3.2 Example
 
 ```csv
 method, url, param, remarks
@@ -59,43 +61,43 @@ GET, http://localhost:12001/api/token,, get token from server 2
 
 ---
 
-## 4. Chức năng (Behavior)
+## 4. Behavior
 
-`client.ps1` thực hiện các bước sau:
+`client.ps1` performs the following steps:
 
-1. Đọc file scenario CSV được chỉ định.
-2. Lần lượt xử lý từng dòng trong file scenario.
-3. Với mỗi dòng:
-   * Nếu `method` là `WAIT`:
-     * Chờ số giây được chỉ định trong cột `param`.
-   * Nếu `method` là request (GET, POST,...):
-     * Lấy URL đầy đủ và Method tương ứng từ file CSV.
-     * Nếu là `POST`, lấy nội dung từ cột `param` để làm body.
-     * Hiển thị Ghi chú (remarks) nếu có.
-     * Gửi HTTP request đến URL trên.
-     * Nhận response từ server.
-     * Ghi log ra màn hình theo định dạng quy định.
-4. Kết thúc khi đã xử lý hết toàn bộ scenario.
+1. Reads the specified scenario CSV file.
+2. Processes each line in the scenario file sequentially.
+3. For each line:
+   * If `method` is `WAIT`:
+     * Wait for the number of seconds specified in the `param` column.
+   * If `method` is a request (GET, POST, ...):
+     * Get the full URL and corresponding Method from the CSV file.
+     * If it is `POST`, use the content from the `param` column as the body.
+     * Display the Remarks (notes) if available.
+     * Send the HTTP request to the specified URL.
+     * Receive the response from the server.
+     * Log to the console according to the specified format.
+4. Finished when the entire scenario has been processed.
 
 ---
 
-## 5. Hiển thị ra màn hình (Log output)
+## 5. Console Output (Log Output)
 
-Chương trình ghi log ra console với format cố định như sau:
+The program logs to the console using a fixed format as follows:
 
-### 5.1 Khi gửi request
+### 5.1 When Sending Request
 
 ```text
 [yyyymmdd hhiiss] Send request: <method> <request url>
 ```
 
-### 5.2 Khi nhận response
+### 5.2 When Receiving Response
 
 ```text
 [yyyymmdd hhiiss] Receive response: <http code> <response>
 ```
 
-### 5.3 Ví dụ
+### 5.3 Example
 
 ```text
 [20260409 141530] Send request: GET http://localhost:2000/api/data
@@ -104,27 +106,27 @@ Chương trình ghi log ra console với format cố định như sau:
 
 ---
 
-## 6. Xử lý lỗi (Error handling)
+## 6. Error Handling
 
-* Nếu HTTP request phát sinh lỗi (timeout, connection error, network error):
-  * Ghi nhận lỗi
-  * Hiển thị thông tin lỗi trong phần `<response>`
-* Chương trình **không dừng đột ngột** khi gặp lỗi trong một request, mà tiếp tục xử lý scenario tiếp theo (sau wait time).
+* If an HTTP request encounters an error (timeout, connection error, network error):
+  * Record the error
+  * Display error information in the `<response>` section
+* The program **does not stop abruptly** when encountering an error in a request, but continues to process the next scenario (after wait time).
 
 ---
 
-## 7. Phạm vi sử dụng (Scope)
+## 7. Scope
 
-`client.ps1` được sử dụng cho:
+`client.ps1` is used for:
 
 * √ System Test (ST)
-* √ Test retry / fault tolerance
-* √ Test cùng:
+* √ Retry / fault tolerance testing
+* √ Testing with:
   * PowerShell test server
   * Toxiproxy
-  * API endpoint giả lập
+  * Mock API endpoints
 
-Không dùng cho:
+Not for:
 
 * Production
 * Load test
@@ -132,6 +134,6 @@ Không dùng cho:
 
 ---
 
-## 8. Tóm tắt ngắn gọn
+## 8. Summary
 
-> `client.ps1` là chương trình client chạy theo kịch bản CSV, gửi HTTP request tuần tự đến server/proxy, ghi nhận kết quả và hỗ trợ kiểm thử retry/fault-handling trong System Test.
+> `client.ps1` is a client program that runs based on a CSV scenario, sending HTTP requests sequentially to a server/proxy, recording results, and supporting retry/fault-handling tests in System Test.

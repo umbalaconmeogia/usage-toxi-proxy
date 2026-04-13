@@ -1,64 +1,66 @@
+[English](README.md) | [Tiếng Việt](README.vi.md)
+
 # Specification: server.ps1
 
-## 1. Tổng quan (Overview)
+## 1. Overview
 
-`server.ps1` là một **HTTP test server đơn giản**, dùng để **mô phỏng hành vi của API server** trong các bài test System Test (ST), đặc biệt là các bài test liên quan đến retry, fault tolerance, và proxy (ví dụ Toxiproxy).
+`server.ps1` is a **simple HTTP test server** used to **simulate API server behavior** in System Test (ST) scripts, especially tests related to retry mechanism, fault tolerance, and proxies (e.g., Toxiproxy).
 
-Server hoạt động dựa trên một file scenario CSV xác định **request nào sẽ trả response gì**, nhằm tạo ra môi trường test có kiểm soát.
+The server operates based on a scenario CSV file that defines **which request yields which response**, creating a controlled testing environment.
 
 ***
 
-## 2. Cú pháp (Syntax)
+## 2. Syntax
 
 ```powershell
 server.ps1 <scenario file> <url> <wait_time_in_second>
 ```
-Ví dụ:
+Example:
 ```powershell
 server.ps1 scenario.csv http://localhost:2000 5
 ```
 
 ***
 
-#### 2.1 Tham số
+#### 2.1 Parameter
 
-| Tham số                 | Mô tả                                                           |
-| :---------------------- | :-------------------------------------------------------------- |
-| `<scenario file>`       | File CSV mô tả kịch bản server. Ví dụ: `server-scenario.csv`    |
-| `<url>`                 | Base URL mà server sẽ lắng nghe. Ví dụ: `http://localhost:2000` |
-| `<wait time in second>` | Thời gian (giây) server chờ sau khi trả response                |
+| Parameter                | Description                                                    |
+| :----------------------- | :------------------------------------------------------------- |
+| `<scenario file>`       | CSV file describing the server scenario. Example: `server-scenario.csv` |
+| `<url>`                 | Base URL the server will listen on. Example: `http://localhost:2000` |
+| `<wait time in second>` | Time (seconds) the server waits after returning a response      |
 
 ***
 
-#### 2.2 Giá trị mặc định
+#### 2.2 Default Values
 
-| Tham số                 | Giá trị mặc định        |
-| :---------------------- | :---------------------- |
+| Parameter                | Default Value           |
+| :----------------------- | :---------------------- |
 | `<scenario file>`       | `server-scenario.csv`   |
 | `<url>`                 | `http://localhost:2000` |
 | `<wait time in second>` | `0`                     |
 
 ***
 
-### 3. Định dạng file scenario
+### 3. Scenario File Format
 
 #### 3.1 File `server-scenario.csv`
 
-File CSV phải có các cột sau:
+The CSV file must have the following columns:
 
 ```csv
 method, request, response
 ```
 
-| Cột        | Mô tả                                     |
+| Column     | Description                               |
 | :--------- | :---------------------------------------- |
 | `method`   | HTTP Method (GET, POST, PUT, DELETE, ...) |
-| `request`  | URL path (ví dụ: `/api/data`)             |
-| `response` | Nội dung response trả về                  |
+| `request`  | URL path (e.g., `/api/data`)              |
+| `response` | Response content returned                 |
 
 ***
 
-#### 3.2 Ví dụ
+#### 3.2 Example
 
 ```csv
 method, request, response
@@ -69,40 +71,40 @@ GET, /api/token, TOKEN OK
 
 ***
 
-### 4. Chức năng (Behavior)
+### 4. Behavior
 
-Khi khởi động, `server.ps1` thực hiện các bước sau:
+When starting, `server.ps1` performs the following steps:
 
-1.  Đọc file scenario CSV được chỉ định.
-2.  Lắng nghe HTTP request tại `<url>` được chỉ định.
-3.  Khi nhận request:
-    * Ghi log: `[yyyymmdd hhmiss] Receive request: <method> <request>`
-    * **Xử lý đặc biệt**: Nếu path là `/stop-server`, server sẽ trả về nội dung `SERVER STOPPED` và tự động dừng hoạt động.
-    * So khớp cặp `(method, request)` với scenario trong file CSV.
-    * Nếu tìm thấy:
-        * Trả về `response` tương ứng.
-        * Ghi log: `[yyyymmdd hhmiss] Receive request: <method> <request>`
-    * Nếu không tìm thấy:
-        * Trả về `UNKNOWN request`.
-        * Ghi log: `[yyyymmdd hhmiss] Receive UNKNOWN request: <method> <request>`
-    * Ghi log: `[yyyymmdd hhmiss] Return response: <response>`
-4.  Sau khi trả response, chờ `<wait time in second>` (nếu > 0).
-5.  Tiếp tục xử lý các request tiếp theo.
-6.  Server dừng khi nhận tín hiệu **Ctrl + C**.
+1.  Reads the specified scenario CSV file.
+2.  Listens for HTTP requests at the specified `<url>`.
+3.  Upon receiving a request:
+    * Log: `[yyyymmdd hhmiss] Receive request: <method> <request>`
+    * **Special Handling**: If the path is `/stop-server`, the server returns `SERVER STOPPED` and automatically stops.
+    * Matches the `(method, request)` pair with the scenario in the CSV file.
+    * If found:
+        * Returns the corresponding `response`.
+        * Log: `[yyyymmdd hhmiss] Receive request: <method> <request>`
+    * If not found:
+        * Returns `UNKNOWN request`.
+        * Log: `[yyyymmdd hhmiss] Receive UNKNOWN request: <method> <request>`
+    * Log: `[yyyymmdd hhmiss] Return response: <response>`
+4.  After returning the response, waits for `<wait time in second>` (if > 0).
+5.  Continues processing subsequent requests.
+6.  The server stops when receiving a **Ctrl + C** signal.
 
 ***
 
-### 5. Log output
+### 5. Log Output
 
-#### 5.1 Nhận request
+#### 5.1 Receiving Request
 
 ```text
 [yyyymmdd hhmiss] Receive [UNKNOWN] request: <method> <request>
 ```
 
-*(Lưu ý: Có thêm tiền tố `UNKNOWN` nếu request không có trong kịch bản)*
+*(Note: The `UNKNOWN` prefix is added if the request is not in the scenario)*
 
-#### 5.2 Trả response
+#### 5.2 Returning Response
 
 ```text
 [yyyymmdd hhmiss] Return response: <response>
@@ -110,18 +112,18 @@ Khi khởi động, `server.ps1` thực hiện các bước sau:
 
 ***
 
-### 6. Phạm vi sử dụng (Scope)
+### 6. Scope
 
-`server.ps1` được sử dụng cho:
+`server.ps1` is used for:
 
 * System Test (ST)
-* Test retry / fault tolerance
-* Test kết hợp với:
+* Retry / fault tolerance testing
+* Testing in combination with:
     * `client.ps1`
     * Toxiproxy
     * Controller (PowerShell / VBA)
 
-Không dùng cho:
+Not for:
 
 * Production
 * Performance test
@@ -129,6 +131,6 @@ Không dùng cho:
 
 ***
 
-### 7. Tóm tắt
+### 7. Summary
 
-`server.ps1` là HTTP test server chạy theo kịch bản CSV và base URL chỉ định, cho phép kiểm soát response theo từng request. Công cụ này hỗ trợ hiệu quả việc kiểm thử retry và fault-handling trong System Test.
+`server.ps1` is an HTTP test server that runs according to a CSV scenario and a specified base URL, allowing controlled responses for each request. This tool effectively supports retry and fault-handling testing in System Test.

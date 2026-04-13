@@ -92,12 +92,14 @@ sequenceDiagram
     WM-->>Client: 200 LOGIC_OK
 
     Client->>WM: GET /api/timeout
-    Note over WM: Mapping 03: forward with 60s delay
+    Note over WM: Mapping 03: hold request for 60s (Delay: 60000ms)
+    Note over Client,WM: Client times out after 30s — gives up waiting
+    Client-->>Client: ERROR (timeout)
+    Note over WM: After 60s, WireMock forwards to server
     WM->>Server: Forward (Port 12000)
     Note right of Server: No handler for /api/timeout
     Server-->>WM: 200 UNKNOWN request
-    Note over Client,WM: Client times out after 30s (before WM responds)
-    WM--xClient: ERROR (timeout — response never delivered)
+    Note over WM: Response discarded — client already disconnected
 
     Note over Client: End of scenario
 ```

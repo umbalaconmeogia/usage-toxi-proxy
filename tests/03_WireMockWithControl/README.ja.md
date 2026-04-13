@@ -92,12 +92,14 @@ sequenceDiagram
     WM-->>Client: 200 LOGIC_OK
 
     Client->>WM: GET /api/timeout
-    Note over WM: マッピング 03: 60秒の遅延で転送
+    Note over WM: マッピング 03: リクエストを60秒保留 (Delay: 60000ms)
+    Note over Client,WM: クライアントは30秒後にタイムアウト — 待機を中止
+    Client-->>Client: エラー (タイムアウト)
+    Note over WM: 60秒後、WireMockがサーバーに転送
     WM->>Server: 転送 (ポート 12000)
     Note right of Server: /api/timeout のハンドラーなし
     Server-->>WM: 200 UNKNOWN request
-    Note over Client,WM: クライアントは30秒後にタイムアウト (WMが応答する前)
-    WM--xClient: エラー (タイムアウト — レスポンスが配信されませんでした)
+    Note over WM: レスポンス破棄 — クライアントはすでに切断済み
 
     Note over Client: シナリオ終了
 ```

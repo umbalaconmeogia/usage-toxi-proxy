@@ -1,0 +1,4 @@
+method,request,response,remarks
+GET,/api/get-data,GET_DATA_OK,Get request
+POST,/api/post-data,POST_DATA_OK,Post request
+GET,/api/logic,LOGIC_OK,To simulate logic error by proxy

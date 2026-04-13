@@ -1,0 +1,3 @@
+method,request,response,remarks
+GET,/api/get-data,GET_DATA_OK,Get request
+GET,/api/token,TOKEN_OK,Get token
