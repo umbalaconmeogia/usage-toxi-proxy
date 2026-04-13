@@ -1,4 +1,4 @@
-[English](README.md) | [Tiếng Việt](README.vi.md)
+[English](README.md) | [Tiếng Việt](README.vi.md) | [日本語](README.ja.md)
 
 # Specification: server.ps1
 
