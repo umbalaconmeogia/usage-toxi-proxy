@@ -1,75 +1,59 @@
-# 🧪 Usage Toxiproxy Example
+[English](README.md) | [Tiếng Việt](README.vi.md) | [日本語](README.ja.md)
 
-Dự án này cung cấp một bộ công cụ mẫu để minh họa cách sử dụng [Toxiproxy](https://github.com/Shopify/toxiproxy) trong việc mô phỏng các lỗi mạng và kiểm thử (System Test) khả năng chịu lỗi (fault tolerance) cũng như cơ chế retry của Client.
+# HTTP Fault Injection with WireMock
+
+This project is a demonstration of using **WireMock** to intervene (inject errors) in the communication between a Client and a Server. The primary goal is to test fault tolerance and error handling mechanisms (e.g., retry logic) of the Client application.
 
 ---
 
-## 🏗️ Kiến trúc hệ thống
+## Simulated Architecture
 
-Hệ thống mô phỏng một luồng API tiêu chuẩn đi qua Proxy để gây lỗi có kiểm soát:
+WireMock acts as a **Proxy layer** between the Client and the real Server. Instead of calling the Server directly, all requests from the Client pass through WireMock. Here, we can configure WireMock to return errors, delay responses, or modify data content periodically.
 
 ```mermaid
 graph LR
-    Client -- "Request" --> TP["Toxiproxy (Proxy Port)"]
-    TP -- "Forward/Fault" --> Server
-    Server -- "Response" --> TP
-    TP -- "Result" --> Client
-    Controller -- "Admin API (8474)" --> TP
-```
-
-| Thành phần | Thư mục | Mô tả |
-| :--- | :--- | :--- |
-| **Client** | [`/client`](./client/README.md) | Chương trình gửi HTTP request theo kịch bản định trước. |
-| **Server** | [`/server`](./server/README.md) | HTTP server giả lập, phản hồi kết quả tùy chỉnh theo request. |
-| **Controller** | [`/controller`](./controller/README.md) | "Bộ não" điều khiển Toxiproxy để tạo ra lỗi (latency, timeout, v.v.). |
-
----
-
-## 🚀 Hướng dẫn nhanh (Quick Start)
-
-### 1. Chuẩn bị
-* Cài đặt và chạy **Toxiproxy Server** (Mặc định lắng nghe ở cổng `8474`).
-* Mở 3 cửa sổ PowerShell riêng biệt cho 3 thành phần.
-
-### 2. Khởi chạy các thành phần
-
-#### Bước 1: Chạy Server
-Cổng mặc định: `2000`
-```powershell
-cd server
-.\program.ps1
-```
-
-#### Bước 2: Chạy Controller
-Cấu hình proxy và kịch bản lỗi:
-```powershell
-cd controller
-.\program.ps1 -ProxyName "my_api_proxy"
-```
-
-#### Bước 3: Chạy Client
-Gửi request dựa trên các URL đầy đủ trong kịch bản:
-```powershell
-cd client
-.\program.ps1
+    Client["Client App"] -- "Request (Port 13000)" --> WM["WireMock (Proxy)"]
+    WM -- "Forward (Port 12000)" --> Server["Target Server"]
+  
+    subgraph "WireMock Process"
+        WM
+        WM_Mappings["Stub Mappings (Fault configs)"]
+    end
 ```
 
 ---
 
-## 📄 Kịch bản (Scenarios)
+## Example Scenarios
 
-Mỗi thành phần hoạt động dựa trên một file `scenario.csv` nằm trong thư mục tương ứng. Bạn có thể thay đổi cách hệ thống phản ứng bằng cách chỉnh sửa các file này mà không cần sửa code.
+In the [`tests/`](./tests) directory, you will find 4 examples guiding you through different levels of using WireMock from basic to advanced:
 
-*   **Server Scenario**: Định nghĩa cặp `Method + Path` tương ứng với `Response`.
-*   **Controller Scenario**: Định nghĩa hành vi của Proxy cho mỗi request (Pass, Timeout, Error Code...).
-*   **Client Scenario**: Danh sách các request cần thực hiện.
+1.  **[01_ClientAccessDirectToServer](./tests/01_ClientAccessDirectToServer)**: Direct connection between Client and Server (no Proxy). This is a baseline test to ensure the system functions normally.
+2.  **[02_WireMockWithoutControl](./tests/02_WireMockWithoutControl)**: Introduces WireMock as a "transparent" Proxy, forwarding all requests without injecting errors.
+3.  **[03_WireMockWithControl](./tests/03_WireMockWithControl)**: Uses WireMock's **Scenarios (State Machine)** feature to inject controlled failures:
+    *   Injects an HTTP 500 error on the first call and succeeds on the retry.
+    *   Injects a business logic error (returning error content even if the HTTP code is 200).
+    *   Injects a Timeout error (delaying the response to force the Client to disconnect).
+4.  **[04_TwoServers](./tests/04_TwoServers)**: A more complex scenario with 2 WireMock instances routing requests to 2 different Servers, simulating a Microservices environment.
 
 ---
 
-## 🛠️ Yêu cầu hệ thống
-- **Hệ điều hành**: Windows (PowerShell 5.1+ hoặc PowerShell Core).
-- **Công cụ**: [Toxiproxy Binary](https://github.com/Shopify/toxiproxy/releases).
-- **Quyền hạn**: Quyền User bình thường (Nếu dùng cổng > 1024).
+## Environment and Setup
 
+### 1. Operating Environment
+*   **Operating System**: Windows.
+*   **Tools**: Uses **WireMock.Net** (Standalone version running via dotnet tool).
+
+### 2. Installation and Usage
+Details on how to install the .NET SDK, install the `dotnet-wiremock` tool, and configure mapping files (JSON) are fully described in [Using WireMock](./wiremock/README.md).
+
+---
+
+## Important Notes
+
+This repository includes **Client** and **Server** programs written in PowerShell:
+*   They are designed to be extremely simple for **demonstration** purposes of WireMock's functionality.
+*   The focus of this repository is the **method of configuring WireMock** for fault testing, not the development of the aforementioned Client/Server applications.
+
+---
 > [!TIP]
-> Để xem chi tiết cấu hình và các tham số kỹ thuật của từng phần, vui lòng truy cập vào `README.md` trong từng thư mục tương ứng.
+> You can refer to the `README.md` file in each `tests` subdirectory for specific PowerShell commands to run for each scenario.
