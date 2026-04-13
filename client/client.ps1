@@ -3,8 +3,7 @@
 # ========================================
 
 param (
-    [string]$ScenarioFile = "scenario.csv",
-    [int]$WaitTimeInSecond = 5
+    [string]$ScenarioFile = "scenario.csv"
 )
 
 # ========================================
@@ -18,7 +17,6 @@ if (!(Test-Path $ScenarioFile)) {
 $Scenarios = Import-Csv $ScenarioFile
 
 Write-Host "[INFO] Scenario file: $ScenarioFile"
-Write-Host "[INFO] Wait time: $WaitTimeInSecond second(s)"
 Write-Host ""
 
 # ========================================
@@ -32,11 +30,23 @@ function Get-TimeStamp {
 # Execute Scenario
 # ========================================
 foreach ($row in $Scenarios) {
-    if ([string]::IsNullOrWhiteSpace($row.url)) { continue }
-
-    $method  = $row.method.ToUpper()
+    $method  = if ($row.method) { $row.method.ToUpper() } else { "" }
     $url     = $row.url
     $remarks = $row.remarks
+    $param   = $row.param
+
+    if ($method -eq "WAIT") {
+        $ts = Get-TimeStamp
+        Write-Host "[$ts] WAIT: $param second(s)"
+        if ($remarks) {
+            Write-Host "         Remarks: $remarks"
+        }
+        Start-Sleep -Seconds ([int]$param)
+        Write-Host ""
+        continue
+    }
+
+    if ([string]::IsNullOrWhiteSpace($url)) { continue }
 
     $ts = Get-TimeStamp
     Write-Host "[$ts] Send request: $method $url"
@@ -45,11 +55,18 @@ foreach ($row in $Scenarios) {
     }
 
     try {
-        $response = Invoke-WebRequest `
-            -Uri $url `
-            -Method $method `
-            -UseBasicParsing `
-            -TimeoutSec 30
+        $webParams = @{
+            Uri               = $url
+            Method            = $method
+            UseBasicParsing   = $true
+            TimeoutSec        = 30
+        }
+
+        if ($method -eq "POST" -and $param) {
+            $webParams.Add("Body", $param)
+        }
+
+        $response = Invoke-WebRequest @webParams
 
         $statusCode = $response.StatusCode
 
@@ -73,6 +90,4 @@ foreach ($row in $Scenarios) {
     $ts = Get-TimeStamp
     Write-Host "[$ts] Receive response: $statusCode $body"
     Write-Host ""
-
-    Start-Sleep -Seconds $WaitTimeInSecond
 }

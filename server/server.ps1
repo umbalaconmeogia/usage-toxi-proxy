@@ -4,7 +4,7 @@
 
 param (
     [string]$ScenarioFile = "scenario.csv",
-    [string]$BaseUrl = "http://localhost:2000",
+    [string]$BaseUrl = "http://localhost:12000",
     [int]$WaitTimeInSecond = 0
 )
 
@@ -74,7 +74,15 @@ try {
         }
 
         $matched = $Scenarios | Where-Object {
-            $_.method.ToUpper() -eq $method -and $_.request -eq $path
+            # Safely check if properties exist and match
+            $scenarioMethod = $_.method
+            $scenarioRequest = $_.request
+            
+            if ($null -eq $scenarioMethod -or $null -eq $scenarioRequest) {
+                return $false
+            }
+
+            return ($scenarioMethod.Trim().ToUpper() -eq $method) -and ($scenarioRequest.Trim() -eq $path)
         }
 
         if ($matched) {

@@ -15,24 +15,18 @@ Chương trình được thiết kế để:
 ## 2. Cú pháp (Syntax)
 
 ```powershell
-program.ps1 <scenario file> <wait_time_in_second>
+program.ps1 [<scenario file>]
 ```
 
-### 2.1 Tham số
-
-| Tham số                  | Mô tả                                                                   |
-| :------------------------ | :------------------------------------------------------------------------ |
-| `<scenario file>`       | File CSV mô tả kịch bản gửi request. Ví dụ:`scenario.csv` |
-| `<wait_time_in_second>` | Thời gian (giây) chờ giữa các request liên tiếp                    |
+| Tham số            | Mô tả                                                   |
+| :------------------ | :-------------------------------------------------------- |
+| `<scenario file>` | File CSV mô tả kịch bản gửi request. Ví dụ: `scenario.csv` |
 
 ### 2.2 Giá trị mặc định
 
-Nếu **không chỉ định** tham số, chương trình sử dụng các giá trị mặc định sau:
-
-| Tham số                  | Giá trị mặc định     |
-| :------------------------ | :------------------------ |
-| `<scenario file>`       | `scenario.csv`   |
-| `<wait_time_in_second>` | `5`                     |
+| Tham số            | Giá trị mặc định   |
+| :------------------ | :------------------ |
+| `<scenario file>` | `scenario.csv` |
 
 ---
 
@@ -43,22 +37,24 @@ Nếu **không chỉ định** tham số, chương trình sử dụng các giá 
 File scenario là file CSV với các cột sau:
 
 ```csv
-method, url, remarks
+method, url, param, remarks
 ```
 
-| Cột       | Mô tả                                     |
-| :-------- | :---------------------------------------- |
-| `method`  | HTTP Method (GET, POST, PUT, DELETE, ...) |
-| `url`     | URL đầy đủ (ví dụ: `http://localhost:12000/api/data`) |
-| `remarks` | Ghi chú cho kịch bản (không ảnh hưởng logic) |
+| Cột       | Mô tả                                                                                                                                                              |
+| :-------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `method`  | HTTP Method (GET, POST, PUT, DELETE, ...) hoặc pseudo-method `WAIT`.                                                                                              |
+| `url`     | URL đầy đủ (ví dụ: `http://localhost:12000/api/data`). Không bắt buộc nếu method là `WAIT`.                                                                      |
+| `param`   | Tham số đi kèm: <br>- Nếu `method` là `WAIT`: Số giây cần chờ. <br>- Nếu `method` là `POST`: Nội dung body gửi đi. |
+| `remarks` | Ghi chú cho kịch bản (không ảnh hưởng logic).                                                                                                                     |
 
 ### 3.2 Ví dụ
 
 ```csv
-method, url, remarks
-GET, http://localhost:12000/api/data, normal request
-POST, http://localhost:12000/api/data, post request
-GET, http://localhost:12001/api/token, get token from server 2
+method, url, param, remarks
+GET, http://localhost:12000/api/data,, normal request
+WAIT,, 5, wait 5 seconds
+POST, http://localhost:12000/api/data, {"id": 1}, post request
+GET, http://localhost:12001/api/token,, get token from server 2
 ```
 
 ---
@@ -70,14 +66,16 @@ GET, http://localhost:12001/api/token, get token from server 2
 1. Đọc file scenario CSV được chỉ định.
 2. Lần lượt xử lý từng dòng trong file scenario.
 3. Với mỗi dòng:
-   * Lấy URL đầy đủ và Method tương ứng từ file CSV.
-   * Hiển thị Ghi chú (remarks) nếu có.
-   * Gửi HTTP request đến URL trên.
-4. Nhận response từ server.
-5. Ghi log ra màn hình theo định dạng quy định (xem mục 5).
-6. Chờ `<wait_time_in_second>`.
-7. Tiếp tục xử lý dòng scenario tiếp theo.
-8. Kết thúc khi đã xử lý hết toàn bộ scenario.
+   * Nếu `method` là `WAIT`:
+     * Chờ số giây được chỉ định trong cột `param`.
+   * Nếu `method` là request (GET, POST,...):
+     * Lấy URL đầy đủ và Method tương ứng từ file CSV.
+     * Nếu là `POST`, lấy nội dung từ cột `param` để làm body.
+     * Hiển thị Ghi chú (remarks) nếu có.
+     * Gửi HTTP request đến URL trên.
+     * Nhận response từ server.
+     * Ghi log ra màn hình theo định dạng quy định.
+4. Kết thúc khi đã xử lý hết toàn bộ scenario.
 
 ---
 

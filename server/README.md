@@ -13,6 +13,10 @@ Server hoạt động dựa trên một file scenario CSV xác định **request
 ```powershell
 server.ps1 <scenario file> <url> <wait_time_in_second>
 ```
+Ví dụ:
+```powershell
+server.ps1 scenario.csv http://localhost:2000 5
+```
 
 ***
 
