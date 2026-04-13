@@ -18,8 +18,8 @@ PS > ..\..\server\server.ps1 .\scenario-server.csv http://localhost:12000 3
 ## ToxiProxy
 
 ```
-PS > ..\..\toxiproxi\toxiproxy-server-windows-amd64.exe -config ..\..\toxiproxi\server1-config.json
-INFO[0000] Populated proxies from file                   config=..\..\toxiproxi\server1-config.json proxies=1
+PS > ..\..\toxiproxy\toxiproxy-server-windows-amd64.exe -config ..\..\toxiproxy\server1-config.json
+INFO[0000] Populated proxies from file                   config=..\..\toxiproxy\server1-config.json proxies=1
 INFO[0000] Started proxy                                 name=dataverse proxy=127.0.0.1:13000 upstream=127.0.0.1:12000
 INFO[0000] API HTTP server starting                      host=localhost port=8474 version=2.1.4
 INFO[0084] Accepted client                               client=127.0.0.1:57272 name=dataverse proxy=127.0.0.1:13000 upstream=127.0.0.1:12000

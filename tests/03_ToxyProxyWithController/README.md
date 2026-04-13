@@ -30,7 +30,7 @@ Thực hiện các bước sau trong thư mục `tests\ClientAccessServerViaToxi
 ### Start ToxiProxy
 
 ```powershell
-..\..\toxiproxi\toxiproxy-windows-amd64.exe -config toxiproxy-config.json
+..\..\toxiproxy\toxiproxy-windows-amd64.exe -config toxiproxy-config.json
 ```
 
 ### Start client

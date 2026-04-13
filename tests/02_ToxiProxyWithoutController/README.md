@@ -25,7 +25,7 @@ graph LR
 * **Start ToxiProxy**
    Run the Toxiproxy server with the predefined configuration:
    ```powershell
-    ..\..\toxiproxi\toxiproxy-server-windows-amd64.exe -config ..\..\toxiproxi\server1-config.json
+    ..\..\toxiproxy\toxiproxy-server-windows-amd64.exe -config ..\..\toxiproxy\server1-config.json
    ```
 * **Start client**
    Run the client scenario (pointing to the Toxiproxy port `13000`):
